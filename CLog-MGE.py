@@ -37,7 +37,7 @@ def apply_CLog_MGE(database, w0, eta):
     w = w0
 
 
-    while t < 100:
+    while t < 1000:
         n = random.randint(0, N-1)
         p = sigmoid(dot_product(w, (1.0,) + x[n]))
         s = tuple((p - y[n]) * comp for comp in ((1.0,) + x[n]))
