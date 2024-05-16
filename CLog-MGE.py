@@ -37,7 +37,7 @@ def apply_CLog_MGE(database, w0, eta):
     w = w0
 
 
-    while t < 1000:
+    while t < 10000:
         n = random.randint(0, N-1)
         p = sigmoid(dot_product(w, (1.0,) + x[n]))
         s = tuple((p - y[n]) * comp for comp in ((1.0,) + x[n]))
@@ -47,7 +47,7 @@ def apply_CLog_MGE(database, w0, eta):
     return w
 
 
-w = apply_CLog_MGE("databases/AND.csv", (0.0, 0.0, 0.0), 0.5)
+w = apply_CLog_MGE("databases/ex6_D.csv", (0.0, 0.0, 0.0), 0.5)
 print(w)
 
 
@@ -55,7 +55,7 @@ print(w)
 
 #---------------------------- PLOT DA SOLUÇÃO -------------------------------------
 
-x, y = take_data("databases/AND.csv")
+x, y = take_data("databases/ex6_D.csv")
 
 def plot_line(w):
     x_values = [0, 1]
