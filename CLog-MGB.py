@@ -31,17 +31,20 @@ def sigmoid(z):
     return 1 / (1 + np.exp(-z))
 
 
-def apply_CLog_MGE(w0, eta):
+def apply_CLog_MGB(w0, eta):
     x, y = take_data(database)
     t = 0
     N = len(y)
     w = w0
+    aux = []
 
 
     while t < 500:
-        n = random.randint(0, N-1)
-        p = sigmoid(dot_product(w, (1.0,) + x[n]))
-        s = tuple((p - y[n]) * comp for comp in ((1.0,) + x[n]))
+        p = [sigmoid(dot_product(w, (1.0,) + xn)) for xn in x]
+        for i in range(N):
+            aux.append(tuple((p[i] - y[i]) * comp for comp in ((1.0,) + x[i])))
+        sums = tuple(sum(tuplos) for tuplos in zip(*aux))
+        s = tuple((1/N) *  comp for comp in sums)
         w = tuple(val1 - val2 for val1, val2 in zip(w, tuple(eta * comp for comp in s))) #there
         t+=1
 
@@ -71,12 +74,7 @@ def plot():
 
 
 database = "databases/ex5_D.csv"
-w = apply_CLog_MGE((0.0, 0.0, 0.0), 0.5)
+w = apply_CLog_MGB((0.0, 0.0, 0.0), 0.5)
 print(w)
 plot()
-
-
-
-
-
 
