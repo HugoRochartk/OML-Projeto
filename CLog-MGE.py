@@ -6,6 +6,19 @@ from math import log
 
 
 
+def error(ypred, ytrue):
+
+    aux = []
+    N = len(ypred)
+    delta = 1*(10**(-6))
+
+    for i in range(N):
+        if ypred[i] == 1:
+            ypred[i] = ypred[i] - delta
+
+        aux.append(-ytrue[i]*log(ypred[i]) - (1-ytrue[i])*log(1-ypred[i]))
+    return (1/N)*sum(aux)
+
 
 
 def take_data(database):
@@ -35,19 +48,40 @@ def sigmoid(z):
     return 1 / (1 + np.exp(-z))
 
 
-def apply_CLog_MGE(w0, eta):
+def plot_error_graph(error_vals, t):
+    plt.figure(figsize=(10, 6))
+    plt.plot(list(range(1,t+1)), error_vals, marker='o', linestyle='-', color='b')
+
+    plt.title('Erro ao longo das iterações')
+    plt.xlabel('Iterações (t)')
+    plt.ylabel('Erro')
+
+
+    plt.grid(True)
+
+    plt.show()
+
+
+def apply_CLog_MGE(w0, eta, error_graph=True):
     x, y = take_data(database)
     t = 0
     N = len(y)
     w = w0
+    error_vals = []
 
 
     while t < 500:
         n = random.randint(0, N-1)
-        p = sigmoid(dot_product(w, (1.0,) + x[n]))
+        p_for_error = [sigmoid(dot_product(w, (1.0,) + xn)) for xn in x]
+        p = p_for_error[n]
         s = tuple((p - y[n]) * comp for comp in ((1.0,) + x[n]))
-        w = tuple(val1 - val2 for val1, val2 in zip(w, tuple(eta * comp for comp in s))) #there
+        w = tuple(val1 - val2 for val1, val2 in zip(w, tuple(eta * comp for comp in s)))
+        if error_graph:
+            error_vals.append(error(p_for_error, y))
         t+=1
+    
+    if error_graph:
+        plot_error_graph(error_vals, t)
 
     return w
 
@@ -78,6 +112,7 @@ database = "databases/ex5_D.csv"
 w = apply_CLog_MGE((0.0, 0.0, 0.0), 0.5)
 print(w)
 plot()
+
 
 
 

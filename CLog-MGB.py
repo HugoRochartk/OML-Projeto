@@ -64,10 +64,10 @@ def apply_CLog_MGB(w0, eta, error_graph=True):
     t = 0
     N = len(y)
     w = w0
-    aux = []
     error_vals = []
 
     while t < 500:
+        aux = []
         p = [sigmoid(dot_product(w, (1.0,) + xn)) for xn in x]
         for i in range(N):
             aux.append(tuple((p[i] - y[i]) * comp for comp in ((1.0,) + x[i])))

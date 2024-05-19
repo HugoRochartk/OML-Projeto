@@ -2,6 +2,21 @@ import numpy as np
 import random
 import csv
 import matplotlib.pyplot as plt
+from math import log
+
+
+def error(ypred, ytrue):
+
+    aux = []
+    N = len(ypred)
+    delta = 1*(10**(-6))
+
+    for i in range(N):
+        if ypred[i] == 1:
+            ypred[i] = ypred[i] - delta
+
+        aux.append(-ytrue[i]*log(ypred[i]) - (1-ytrue[i])*log(1-ypred[i]))
+    return (1/N)*sum(aux)
 
 
 def take_data(database):
@@ -31,24 +46,44 @@ def sigmoid(z):
     return 1 / (1 + np.exp(-z))
 
 
-def apply_CLog_MGmB(w0, eta):
+def plot_error_graph(error_vals, t):
+    plt.figure(figsize=(10, 6))
+    plt.plot(list(range(1,t+1)), error_vals, marker='o', linestyle='-', color='b')
+
+    plt.title('Erro ao longo das iterações')
+    plt.xlabel('Iterações (t)')
+    plt.ylabel('Erro')
+
+
+    plt.grid(True)
+
+    plt.show()
+
+
+def apply_CLog_MGmB(w0, eta, error_graph=True):
     x, y = take_data(database)
     t = 0
     N = len(y)
     w = w0
-    aux = []
-
+    error_vals = []
     
     while t < 500:
+        aux = []
+        p_for_error = [sigmoid(dot_product(w, (1.0,) + xn)) for xn in x]
         B = random.randint(1, N)
         subset = random.sample(list(range(N)), B)
         for ind in subset:
-            dp = sigmoid(dot_product(w, (1.0,) + x[ind]))
+            dp = p_for_error[ind]
             aux.append(tuple((dp - y[ind]) * comp for comp in ((1.0,) + x[ind])))
         sums = tuple(sum(tuplos) for tuplos in zip(*aux))
         s = tuple((1/B) *  comp for comp in sums)
-        w = tuple(val1 - val2 for val1, val2 in zip(w, tuple(eta * comp for comp in s))) #there
+        w = tuple(val1 - val2 for val1, val2 in zip(w, tuple(eta * comp for comp in s)))
+        if error_graph:
+            error_vals.append(error(p_for_error, y))
         t+=1
+
+    if error_graph:
+        plot_error_graph(error_vals, t)
 
     return w
 
