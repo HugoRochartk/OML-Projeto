@@ -2,6 +2,10 @@ import numpy as np
 import random
 import csv
 import matplotlib.pyplot as plt
+from math import log
+
+
+
 
 
 def take_data(database):
