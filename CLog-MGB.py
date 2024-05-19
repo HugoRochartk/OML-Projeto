@@ -74,10 +74,12 @@ def apply_CLog_MGB(w0, eta, error_graph=True):
         sums = tuple(sum(tuplos) for tuplos in zip(*aux))
         s = tuple((1/N) *  comp for comp in sums)
         w = tuple(val1 - val2 for val1, val2 in zip(w, tuple(eta * comp for comp in s)))
-        error_vals.append(error(p, y))
+        if error_graph:
+            error_vals.append(error(p, y))
         t+=1
     
-    plot_error_graph(error_vals, t)
+    if error_graph:
+        plot_error_graph(error_vals, t)
 
     return w
 
