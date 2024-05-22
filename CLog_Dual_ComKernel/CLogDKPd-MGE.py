@@ -73,7 +73,7 @@ def build_dp_matrix(x, N):
 
 
 
-def apply_CLogD_MGE(eta, d, error_graph=True):
+def apply_CLogDKPd_MGE(eta, d, error_graph=True):
     x, y = take_data(database)
     t = 0
     N = len(y)
@@ -93,8 +93,7 @@ def apply_CLogD_MGE(eta, d, error_graph=True):
      
         aux = []
         for j in range(N):
-            for i in range(d):
-                aux.append((dp_matrix[j][n]))
+                aux.append((dp_matrix[j][n])**d)
         s = tuple((p - y[n]) * comp for comp in aux)
  
 
@@ -106,8 +105,6 @@ def apply_CLogD_MGE(eta, d, error_graph=True):
         t+=1
     
 
-
-
     if error_graph:
         plot_error_graph(error_vals, t)
 
@@ -115,6 +112,7 @@ def apply_CLogD_MGE(eta, d, error_graph=True):
     return alpha
 
 
+'''
 def plot():
     x, y = take_data(database)
 
@@ -127,7 +125,7 @@ def plot():
 
 
     x_values = [0, 1]
-    y_values = [-(w[0] + w[1]*x)/w[2] for x in x_values]
+    y_values = [-(w[0] + w[1]*x + w[2]*x*x) for x in x_values]
     plt.plot(x_values, y_values, color='green')
 
 
@@ -136,10 +134,10 @@ def plot():
 
     plt.show()
 
+'''
 
 
-
-database = "databases/ex6_D.csv"
-w = apply_CLogD_MGE(0.5, 3)
-print(w)
-plot()
+database = "databases/ex5_D.csv"
+alpha = apply_CLogDKPd_MGE(0.5, 2)
+print(alpha)
+#plot()
