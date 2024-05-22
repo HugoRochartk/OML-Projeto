@@ -10,6 +10,10 @@ def error(ypred, ytrue):
 
     aux = []
     N = len(ypred)
+
+    if N == 0:
+        return 1
+    
     delta = 1*(10**(-6))
 
     for i in range(N):
@@ -18,7 +22,6 @@ def error(ypred, ytrue):
 
         aux.append(-ytrue[i]*log(ypred[i]) - (1-ytrue[i])*log(1-ypred[i]))
     return (1/N)*sum(aux)
-
 
 
 def take_data(database):
@@ -68,9 +71,9 @@ def apply_CLog_MGE(w0, eta, error_graph=True):
     N = len(y)
     w = w0
     error_vals = []
+    p_for_error = []
 
-
-    while t < 500:
+    while t < 2000 and error(p_for_error, y) > 0.025:
         n = random.randint(0, N-1)
         p_for_error = [sigmoid(dot_product(w, (1.0,) + xn)) for xn in x]
         p = p_for_error[n]

@@ -4,10 +4,15 @@ import csv
 import matplotlib.pyplot as plt
 from math import log
 
+
 def error(ypred, ytrue):
 
     aux = []
     N = len(ypred)
+
+    if N == 0:
+        return 1
+    
     delta = 1*(10**(-6))
 
     for i in range(N):
@@ -65,8 +70,9 @@ def apply_CLog_MGB(w0, eta, error_graph=True):
     N = len(y)
     w = w0
     error_vals = []
-
-    while t < 500:
+    p = []
+    
+    while t < 2000 and error(p, y) > 0.025:
         aux = []
         p = [sigmoid(dot_product(w, (1.0,) + xn)) for xn in x]
         for i in range(N):

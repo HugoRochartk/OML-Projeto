@@ -9,13 +9,17 @@ def error(ypred, ytrue):
 
     aux = []
     N = len(ypred)
+
+    if N == 0:
+        return 1
+    
     delta = 1*(10**(-6))
 
     for i in range(N):
         if ypred[i] == 1:
             ypred[i] = ypred[i] - delta
-        aux.append(-ytrue[i]*log(ypred[i]) - (1-ytrue[i])*log(1-ypred[i]))
 
+        aux.append(-ytrue[i]*log(ypred[i]) - (1-ytrue[i])*log(1-ypred[i]))
     return (1/N)*sum(aux)
 
 
@@ -66,9 +70,9 @@ def apply_CLog_MGmB(w0, eta, error_graph=True):
     N = len(y)
     w = w0
     error_vals = []
+    p_for_error = []
 
-
-    while t < 500:
+    while t < 2000 and error(p_for_error, y) > 0.025:
         aux = []
         p_for_error = [sigmoid(dot_product(w, (1.0,) + xn)) for xn in x]
         B = random.randint(1, N)

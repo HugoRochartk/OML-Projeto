@@ -8,6 +8,10 @@ def error(ypred, ytrue):
 
     aux = []
     N = len(ypred)
+
+    if N == 0:
+        return 1
+    
     delta = 1*(10**(-6))
 
     for i in range(N):
@@ -80,8 +84,9 @@ def apply_CLogD_MGE(eta, error_graph=True):
     alpha = tuple(0 for i in range(N))
     error_vals = []
     dp_matrix = build_dp_matrix(x, N)
+    p_for_error = []
 
-    while t < 500:
+    while t < 2000 and error(p_for_error, y) > 0.025:
 
         p_for_error = []
         for i in range(N):
