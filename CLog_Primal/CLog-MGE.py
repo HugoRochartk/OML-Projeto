@@ -111,7 +111,7 @@ def plot():
     plt.show()
 
 
-database = "databases/ex5_D.csv"
+database = "databases/XOR.csv"
 w = apply_CLog_MGE((0.0, 0.0, 0.0), 0.5)
 print(w)
 plot()

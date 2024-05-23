@@ -110,11 +110,17 @@ def apply_CLogDKPd_MGB(eta, d, error_graph=True):
     
     if error_graph:
         plot_error_graph(error_vals, t)
+    
+
+    w_to_sum = []
+    for i in range(N):
+        w_to_sum.append(tuple(alpha[i] * comp for comp in ((1.0,) + x[i])))
+    w = tuple(map(sum, zip(*w_to_sum)))
 
 
-    return alpha
+    return w
 
-'''
+
 def plot():
     x, y = take_data(database)
 
@@ -126,20 +132,12 @@ def plot():
             plt.scatter(x[i][0], x[i][1], color='red')
 
 
-    x_values = [0, 1]
-    y_values = [-(w[0] + w[1]*x)/w[2] for x in x_values]
-    plt.plot(x_values, y_values, color='green')
-
-
-    plt.xlabel('X')
-    plt.ylabel('Y')
-
     plt.show()
-'''
 
 
 
-database = "databases/ex5_D.csv"
-alpha = apply_CLogDKPd_MGB(0.5, 2)
-print(alpha)
-#plot()
+
+database = "databases/ex6_D.csv"
+w = apply_CLogDKPd_MGB(0.5, 2)
+print(w)
+plot()
