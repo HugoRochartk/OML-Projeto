@@ -100,35 +100,38 @@ def apply_CLog_MGE(w0, eta, error_graph=True, accuracy=True):
     if error_graph:
         plot_error_graph(error_vals, t)
 
-    return w
+    return w, x
 
 
-def plot():
-    x, y = take_data(database)
+def plot_decision_boundary(w, x):
+    x_min, x_max = min([xi[0] for xi in x]) - 1, max([xi[0] for xi in x]) + 1
+    y_min, y_max = min([xi[1] for xi in x]) - 1, max([xi[1] for xi in x]) + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01),
+                         np.arange(y_min, y_max, 0.01))
+    grid = np.c_[xx.ravel(), yy.ravel()]
+    
+    Z = np.dot(np.c_[np.ones(grid.shape[0]), grid], w)
+    Z = Z.reshape(xx.shape)
+    
+    plt.contourf(xx, yy, Z, levels=[-float('inf'), 0, float('inf')], colors=['blue', 'red'], alpha=0.3)
+    plt.contour(xx, yy, Z, levels=[0], colors='blue')
+    plot_data_points()
 
 
-    for i in range(len(x)):
-        if y[i] == 0:
-            plt.scatter(x[i][0], x[i][1], color='blue')
-        else:
-            plt.scatter(x[i][0], x[i][1], color='red')
-
-
-    x_values = [0, 1]
-    y_values = [-(w[0] + w[1]*x)/w[2] for x in x_values]
-    plt.plot(x_values, y_values, color='green')
-
-
-    plt.xlabel('X')
-    plt.ylabel('Y')
-
+def plot_data_points():
+    x_data, y_data = take_data(database)
+    for i in range(len(x_data)):
+        color = 'blue' if y_data[i] == 0 else 'red'
+        plt.scatter(x_data[i][0], x_data[i][1], color=color)
     plt.show()
 
 
+
 database = "databases/XOR.csv"
-w = apply_CLog_MGE((0.0, 0.0, 0.0), 0.5)
+w, x = apply_CLog_MGE((0.0, 0.0, 0.0), 0.5)
 print(f"w = {w}")
-plot()
+
+plot_decision_boundary(w, x)
 
 
 

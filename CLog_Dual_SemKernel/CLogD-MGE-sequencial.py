@@ -85,7 +85,7 @@ def get_accuracy(y_pred, y_true):
 
     return c/N
 
-def apply_CLogD_MGE(eta, error_graph=True, accuracy=True):
+def apply_CLogD_MGE_sequencial(eta, error_graph=True, accuracy=True):
     x, y = take_data(database)
     t = 0
     N = len(y)
@@ -134,34 +134,39 @@ def apply_CLogD_MGE(eta, error_graph=True, accuracy=True):
         plot_error_graph(error_vals, t)
 
 
-    return w
+    return w, alpha, x
 
 
-def plot():
-    x, y = take_data(database)
+
+def plot_decision_boundary(alpha, x):
+    x_min, x_max = min([xi[0] for xi in x]) - 1, max([xi[0] for xi in x]) + 1
+    y_min, y_max = min([xi[1] for xi in x]) - 1, max([xi[1] for xi in x]) + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01),
+                         np.arange(y_min, y_max, 0.01))
+    grid = np.c_[xx.ravel(), yy.ravel()]
+    
+    dp_matrix_grid = np.array([[(1 + dot_product(xi, xj)) for xj in x] for xi in grid])
+    decision_values = np.dot(dp_matrix_grid, alpha)
+    decision_values = decision_values.reshape(xx.shape)
+    
+    plt.contourf(xx, yy, decision_values, levels=[-float('inf'), 0, float('inf')], colors=['blue', 'red'], alpha=0.3)
+    plt.contour(xx, yy, decision_values, levels=[0], colors='blue')
+    plot_data_points()
+    
 
 
-    for i in range(len(x)):
-        if y[i] == 0:
-            plt.scatter(x[i][0], x[i][1], color='blue')
-        else:
-            plt.scatter(x[i][0], x[i][1], color='red')
-
-
-    x_values = [0, 1]
-    y_values = [-(w[0] + w[1]*x)/w[2] for x in x_values]
-    plt.plot(x_values, y_values, color='green')
-
-
-    plt.xlabel('X')
-    plt.ylabel('Y')
-
+def plot_data_points():
+    x_data, y_data = take_data(database)
+    for i in range(len(x_data)):
+        color = 'blue' if y_data[i] == 0 else 'red'
+        plt.scatter(x_data[i][0], x_data[i][1], color=color)
     plt.show()
 
 
 
 
 database = "databases/ex5_D.csv"
-w = apply_CLogD_MGE(0.5)
+w, alpha, x = apply_CLogD_MGE_sequencial(0.5)
 print(f"w = {w}")
-plot()
+
+plot_decision_boundary(alpha, x)
