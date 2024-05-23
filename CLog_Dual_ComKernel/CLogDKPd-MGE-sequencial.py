@@ -4,6 +4,7 @@ import csv
 import matplotlib.pyplot as plt
 from math import log
 
+
 def error(ypred, ytrue):
 
     aux = []
@@ -76,6 +77,7 @@ def build_dp_matrix(x, N):
     return matrix
 
 
+
 def get_accuracy(y_pred, y_true):
     c = 0
     N = len(y_pred)
@@ -85,55 +87,60 @@ def get_accuracy(y_pred, y_true):
             c+=1
 
     return c/N
+    
 
 
-def apply_CLogDKPd_MGB(eta, d, error_graph=True, accuracy=True):
+def apply_CLogDKPd_MGE(eta, d, error_graph=True, accuracy=True):
     x, y = take_data(database)
     t = 0
     N = len(y)
     alpha = tuple(0 for i in range(N))
     error_vals = []
     dp_matrix = build_dp_matrix(x, N)
-    p = []
+    p_for_error = []
+    n = 0
 
-    while t < 2000 and error(p, y) > 0.025:
+    while t < 2000 and error(p_for_error, y) > 0.025:
 
-        p = []
-        for n in range(N):
-            p.append(sigmoid(sum([alpha[l]*dp_matrix[l][n] for l in range(N)])))
-          
-        to_sum = []
+        p_for_error = []
         for i in range(N):
-            aux = []
-            for j in range(N):
-                aux.append(dp_matrix[j][i]**d)
-            to_sum.append(tuple((p[i] - y[i]) * comp for comp in aux))
+            p_for_error.append(sigmoid(sum([alpha[l]*dp_matrix[l][i] for l in range(N)])))
+        
+        if n > N-1:
+            n = 0
+
+        p = sigmoid(sum([alpha[l]*dp_matrix[l][n] for l in range(N)]))
+          
+     
+        aux = []
+        for j in range(N):
+                aux.append((dp_matrix[j][n])**d)
+        s = tuple((p - y[n]) * comp for comp in aux)
  
-        s = tuple((1/N) * comp for comp in tuple(map(sum, zip(*to_sum))))
 
         alpha = tuple(val1 - val2 for val1, val2 in zip(alpha, tuple(eta * comp for comp in s)))
 
         if error_graph:
-            error_vals.append(error(p, y))
-
+            error_vals.append(error(p_for_error, y))
+    
         t+=1
+        n+=1
     
-
-    if accuracy:
-        print(f"Accuracy: {get_accuracy(p, y)}")
-
-    
-    if error_graph:
-        plot_error_graph(error_vals, t)
-    
-
     w_to_sum = []
     for i in range(N):
         w_to_sum.append(tuple(alpha[i] * comp for comp in ((1.0,) + x[i])))
     w = tuple(map(sum, zip(*w_to_sum)))
+    
+
+    if accuracy:
+        print(f"Accuracy: {get_accuracy(p_for_error, y)}")
+
+    if error_graph:
+        plot_error_graph(error_vals, t)
 
 
     return w
+
 
 
 def plot():
@@ -152,6 +159,6 @@ def plot():
 
 
 database = "databases/ex5_D.csv"
-w = apply_CLogDKPd_MGB(0.5, 2)
+w = apply_CLogDKPd_MGE(0.5, 2)
 print(f"w = {w}")
 plot()

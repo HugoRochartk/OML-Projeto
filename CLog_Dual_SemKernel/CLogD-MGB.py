@@ -75,9 +75,17 @@ def build_dp_matrix(x, N):
 
     return matrix
 
+def get_accuracy(y_pred, y_true):
+    c = 0
+    N = len(y_pred)
 
+    for i in range(N):
+        if (y_pred[i] > 0.5 and y_true[i] == 1) or (y_pred[i] <= 0.5 and y_true[i] == 0):
+            c+=1
 
-def apply_CLogD_MGB(eta, error_graph=True):
+    return c/N
+
+def apply_CLogD_MGB(eta, error_graph=True, accuracy=True):
     x, y = take_data(database)
     t = 0
     N = len(y)
@@ -114,6 +122,10 @@ def apply_CLogD_MGB(eta, error_graph=True):
         w_to_sum.append(tuple(alpha[i] * comp for comp in ((1.0,) + x[i])))
     w = tuple(map(sum, zip(*w_to_sum)))
 
+
+    if accuracy:
+        print(f"Accuracy: {get_accuracy(p, y)}")
+
     if error_graph:
         plot_error_graph(error_vals, t)
 
@@ -147,5 +159,5 @@ def plot():
 
 database = "databases/ex5_D.csv"
 w = apply_CLogD_MGB(0.5)
-print(w)
+print(f"w = {w}")
 plot()

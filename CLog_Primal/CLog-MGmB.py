@@ -64,7 +64,18 @@ def plot_error_graph(error_vals, t):
     plt.show()
 
 
-def apply_CLog_MGmB(w0, eta, error_graph=True):
+def get_accuracy(y_pred, y_true):
+    c = 0
+    N = len(y_pred)
+
+    for i in range(N):
+        if (y_pred[i] > 0.5 and y_true[i] == 1) or (y_pred[i] <= 0.5 and y_true[i] == 0):
+            c+=1
+
+    return c/N
+
+
+def apply_CLog_MGmB(w0, eta, error_graph=True, accuracy=True):
     x, y = take_data(database)
     t = 0
     N = len(y)
@@ -86,6 +97,10 @@ def apply_CLog_MGmB(w0, eta, error_graph=True):
         if error_graph:
             error_vals.append(error(p_for_error, y))
         t+=1
+
+
+    if accuracy:
+        print(f"Accuracy: {get_accuracy(p_for_error, y)}")
 
     if error_graph:
         plot_error_graph(error_vals, t)
@@ -117,6 +132,6 @@ def plot():
 
 database = "databases/ex5_D.csv"
 w = apply_CLog_MGmB((0.0, 0.0, 0.0), 0.5)
-print(w)
+print(f"w = {w}")
 plot()
 
