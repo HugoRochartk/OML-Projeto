@@ -127,7 +127,7 @@ def plot_data_points():
 
 
 
-database = "databases/XOR.csv"
+database = "databases/ex6_D.csv"
 w, x = apply_CLog_MGE((0.0, 0.0, 0.0), 0.5)
 print(f"w = {w}")
 

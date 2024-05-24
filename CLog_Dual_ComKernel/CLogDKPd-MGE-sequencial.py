@@ -157,7 +157,7 @@ def plot_data_points():
     plt.show()
 
 
-database = "databases/XOR.csv"
+database = "databases/ex6_D.csv"
 d = 2
 w, alpha, x = apply_CLogDKPd_MGE_sequencial(0.5, d)
 print(f"w = {w}")

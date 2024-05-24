@@ -159,7 +159,7 @@ def plot_data_points():
 
 
 
-database = "databases/ex5_D.csv"
+database = "databases/ex6_D.csv"
 w, alpha, x = apply_CLogD_MGE(0.5)
 print(f"w = {w}")
 
