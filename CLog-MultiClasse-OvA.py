@@ -29,7 +29,7 @@ def plot_DB(x, y):
     coord_y = [p[1] for p in x]
    
     for i in range(len(x)):
-        plt.scatter(coord_x[i], coord_y[i], color=colors[y[i]], label=f'Classe {y[i]}')
+        plt.scatter(coord_x[i], coord_y[i], color=colors[y[i]], label=f'Classe {int(y[i])}')
 
 
     plt.legend()
@@ -45,7 +45,7 @@ database = "databases/multiclass1.csv"
 
 
 x, y = module.take_data(database)
-classes = set(y)
+classes = set(map(int, y))
 w_classifiers = {}
 
 plot_DB(x, y)
@@ -55,7 +55,7 @@ for c in classes:
     y = [0.0 if elem != c else 1.0 for elem in old_y]
     c_database = save_intermed_csv(f"{database[:-4]}/class_{c}.csv", x, y)
 
-    w, _, _ = module.apply_CLogD_MGB(c_database, 0.5, error_graph=False, accuracy=True, plot=False)
+    w, _, _ = module.apply_CLogD_MGB(c_database, 0.5, error_graph=False, accuracy=True, plot=True)
     w_classifiers[c] = w
 
 
