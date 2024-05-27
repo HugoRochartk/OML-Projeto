@@ -85,35 +85,34 @@ def get_accuracy(y_pred, y_true):
 
     return c/N
 
-def apply_CLogD_MGE(eta, error_graph=True, accuracy=True):
+def apply_CLogD_MGB(database, eta, error_graph=True, accuracy=True, plot=True):
     x, y = take_data(database)
     t = 0
     N = len(y)
     alpha = tuple(0 for i in range(N))
     error_vals = []
     dp_matrix = build_dp_matrix(x, N)
-    p_for_error = []
+    p = []
 
-    while t < 2000 and error(p_for_error, y) > 0.025:
+    while t < 2000 and error(p, y) > 0.025:
 
-        p_for_error = []
-        for i in range(N):
-            p_for_error.append(sigmoid(sum([alpha[l]*dp_matrix[l][i] for l in range(N)])))
-        
-        n = random.randint(0, N-1)
-        p = sigmoid(sum([alpha[l]*dp_matrix[l][n] for l in range(N)]))
+        p = []
+        for n in range(N):
+            p.append(sigmoid(sum([alpha[l]*dp_matrix[l][n] for l in range(N)])))
           
-     
-        aux = []
-        for j in range(N):
-            aux.append(dp_matrix[j][n])
-        s = tuple((p - y[n]) * comp for comp in aux)
+        to_sum = []
+        for i in range(N):
+            aux = []
+            for j in range(N):
+                aux.append(dp_matrix[j][i])
+            to_sum.append(tuple((p[i] - y[i]) * comp for comp in aux))
  
+        s = tuple((1/N) * comp for comp in tuple(map(sum, zip(*to_sum))))
 
         alpha = tuple(val1 - val2 for val1, val2 in zip(alpha, tuple(eta * comp for comp in s)))
 
         if error_graph:
-            error_vals.append(error(p_for_error, y))
+            error_vals.append(error(p, y))
 
         t+=1
     
@@ -123,17 +122,21 @@ def apply_CLogD_MGE(eta, error_graph=True, accuracy=True):
         w_to_sum.append(tuple(alpha[i] * comp for comp in ((1.0,) + x[i])))
     w = tuple(map(sum, zip(*w_to_sum)))
 
+
     if accuracy:
-        print(f"Accuracy: {get_accuracy(p_for_error, y)}")
+        print(f"Accuracy: {get_accuracy(p, y)}")
 
     if error_graph:
         plot_error_graph(error_vals, t)
+    
+    if plot:
+        plot_decision_boundary(database, alpha, x)
 
 
     return w, alpha, x
 
 
-def plot_decision_boundary(alpha, x):
+def plot_decision_boundary(database, alpha, x):
     x_min, x_max = min([xi[0] for xi in x]) - 1, max([xi[0] for xi in x]) + 1
     y_min, y_max = min([xi[1] for xi in x]) - 1, max([xi[1] for xi in x]) + 1
     xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01),
@@ -146,21 +149,20 @@ def plot_decision_boundary(alpha, x):
     
     plt.contourf(xx, yy, decision_values, levels=[-float('inf'), 0, float('inf')], colors=['blue', 'red'], alpha=0.3)
     plt.contour(xx, yy, decision_values, levels=[0], colors='blue')
-    plot_data_points()
+    plot_data_points(database)
     
 
-def plot_data_points():
+def plot_data_points(database):
     x_data, y_data = take_data(database)
     for i in range(len(x_data)):
         color = 'blue' if y_data[i] == 0 else 'red'
         plt.scatter(x_data[i][0], x_data[i][1], color=color)
     plt.show()
 
-
-
-
-database = "databases/ex6_D.csv"
-w, alpha, x = apply_CLogD_MGE(0.5)
+'''
+database = "databases/ex5_D.csv"
+w, alpha, x = apply_CLogD_MGB(database, 0.5)
 print(f"w = {w}")
 
-plot_decision_boundary(alpha, x)
+plot_decision_boundary(database, alpha, x)
+'''

@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from math import log
 
 
+
 def error(ypred, ytrue):
 
     aux = []
@@ -75,7 +76,7 @@ def get_accuracy(y_pred, y_true):
     return c/N
 
 
-def apply_CLog_MGmB(w0, eta, error_graph=True, accuracy=True):
+def apply_CLog_MGE(database, w0, eta, error_graph=True, accuracy=True, plot=True):
     x, y = take_data(database)
     t = 0
     N = len(y)
@@ -84,31 +85,28 @@ def apply_CLog_MGmB(w0, eta, error_graph=True, accuracy=True):
     p_for_error = []
 
     while t < 2000 and error(p_for_error, y) > 0.025:
-        aux = []
+        n = random.randint(0, N-1)
         p_for_error = [sigmoid(dot_product(w, (1.0,) + xn)) for xn in x]
-        B = random.randint(1, N)
-        subset = random.sample(list(range(N)), B)
-        for ind in subset:
-            dp = p_for_error[ind]
-            aux.append(tuple((dp - y[ind]) * comp for comp in ((1.0,) + x[ind])))
-        sums = tuple(sum(tuplos) for tuplos in zip(*aux))
-        s = tuple((1/B) *  comp for comp in sums)
+        p = p_for_error[n]
+        s = tuple((p - y[n]) * comp for comp in ((1.0,) + x[n]))
         w = tuple(val1 - val2 for val1, val2 in zip(w, tuple(eta * comp for comp in s)))
         if error_graph:
             error_vals.append(error(p_for_error, y))
         t+=1
-
-
+    
     if accuracy:
         print(f"Accuracy: {get_accuracy(p_for_error, y)}")
 
     if error_graph:
         plot_error_graph(error_vals, t)
+    
+    if plot:
+        plot_decision_boundary(database, w, x)
 
     return w, x
 
 
-def plot_decision_boundary(w, x):
+def plot_decision_boundary(database, w, x):
     x_min, x_max = min([xi[0] for xi in x]) - 1, max([xi[0] for xi in x]) + 1
     y_min, y_max = min([xi[1] for xi in x]) - 1, max([xi[1] for xi in x]) + 1
     xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01),
@@ -120,10 +118,10 @@ def plot_decision_boundary(w, x):
     
     plt.contourf(xx, yy, Z, levels=[-float('inf'), 0, float('inf')], colors=['blue', 'red'], alpha=0.3)
     plt.contour(xx, yy, Z, levels=[0], colors='blue')
-    plot_data_points()
+    plot_data_points(database)
 
 
-def plot_data_points():
+def plot_data_points(database):
     x_data, y_data = take_data(database)
     for i in range(len(x_data)):
         color = 'blue' if y_data[i] == 0 else 'red'
@@ -131,10 +129,14 @@ def plot_data_points():
     plt.show()
 
 
-
-database = "databases/ex5_D.csv"
-w, x = apply_CLog_MGmB((0.0, 0.0, 0.0), 0.5)
+'''
+database = "databases/ex6_D.csv"
+w, x = apply_CLog_MGE(database, (0.0, 0.0, 0.0), 0.5)
 print(f"w = {w}")
 
-plot_decision_boundary(w, x)
+'''
+
+
+
+
 

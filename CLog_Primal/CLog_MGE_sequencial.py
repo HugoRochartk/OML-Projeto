@@ -76,7 +76,7 @@ def get_accuracy(y_pred, y_true):
     return c/N
 
 
-def apply_CLog_MGE_sequencial(w0, eta, error_graph=True, accuracy=True):
+def apply_CLog_MGE_sequencial(database, w0, eta, error_graph=True, accuracy=True, plot=True):
     x, y = take_data(database)
     t = 0
     N = len(y)
@@ -103,10 +103,13 @@ def apply_CLog_MGE_sequencial(w0, eta, error_graph=True, accuracy=True):
     if error_graph:
         plot_error_graph(error_vals, t)
 
+    if plot:
+        plot_decision_boundary(database, w, x)
+
     return w, x
 
 
-def plot_decision_boundary(w, x):
+def plot_decision_boundary(database, w, x):
     x_min, x_max = min([xi[0] for xi in x]) - 1, max([xi[0] for xi in x]) + 1
     y_min, y_max = min([xi[1] for xi in x]) - 1, max([xi[1] for xi in x]) + 1
     xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01),
@@ -118,19 +121,19 @@ def plot_decision_boundary(w, x):
     
     plt.contourf(xx, yy, Z, levels=[-float('inf'), 0, float('inf')], colors=['blue', 'red'], alpha=0.3)
     plt.contour(xx, yy, Z, levels=[0], colors='blue')
-    plot_data_points()
+    plot_data_points(database)
 
 
-def plot_data_points():
+def plot_data_points(database):
     x_data, y_data = take_data(database)
     for i in range(len(x_data)):
         color = 'blue' if y_data[i] == 0 else 'red'
         plt.scatter(x_data[i][0], x_data[i][1], color=color)
     plt.show()
 
-
+'''
 database = "databases/ex5_D.csv"
-w, x = apply_CLog_MGE_sequencial((0.0, 0.0, 0.0), 0.5)
+w, x = apply_CLog_MGE_sequencial(database, (0.0, 0.0, 0.0), 0.5)
 print(f"w = {w}")
 
-plot_decision_boundary(w, x)
+'''
