@@ -17,6 +17,9 @@ def error(ypred, ytrue):
     for i in range(N):
         if ypred[i] == 1:
             ypred[i] = ypred[i] - delta
+        if ypred[i] == 0:
+            ypred[i] = ypred[i] + delta
+
 
         aux.append(-ytrue[i]*log(ypred[i]) - (1-ytrue[i])*log(1-ypred[i]))
     return (1/N)*sum(aux)
