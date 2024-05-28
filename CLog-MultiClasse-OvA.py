@@ -1,9 +1,8 @@
 #escolher classificador
-
-
 from CLog_Dual_SemKernel import CLogD_MGB as module
 #from CLog_Dual_ComKernel import CLogDKPd_MGB as module
 import matplotlib.pyplot as plt
+
 
 def save_intermed_csv(path, x, y):
     
@@ -58,8 +57,8 @@ for c in classes:
     y = [0.0 if elem != c else 1.0 for elem in old_y]
     c_database = save_intermed_csv(f"{database[:-4]}/class_{c}.csv", x, y)
 
-    #w, _, _ = module.apply_CLogDKPd_MGB(c_database, 0.5, 3, error_graph=False, accuracy=True, plot=True)
-    w, _, _ = module.apply_CLogD_MGB(c_database, 0.5, error_graph=False, accuracy=True, plot=True)
+    #w, _, _ = module.apply_CLogDKPd_MGB(c_database, 0.5, 3, error_graph=False, accuracy=True, plot=True, display_confusion_matrix=False)
+    w, _, _ = module.apply_CLogD_MGB(c_database, 0.5, error_graph=False, accuracy=True, plot=True, display_confusion_matrix=False)
     w_classifiers[c] = w
 
 

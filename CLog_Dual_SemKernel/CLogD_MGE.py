@@ -3,6 +3,7 @@ import random
 import csv
 import matplotlib.pyplot as plt
 from math import log
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 def error(ypred, ytrue):
 
@@ -87,7 +88,7 @@ def get_accuracy(y_pred, y_true):
 
     return c/N
 
-def apply_CLogD_MGE(database, eta, error_graph=True, accuracy=True, plot=True):
+def apply_CLogD_MGE(database, eta, error_graph=True, accuracy=True, plot=True, display_confusion_matrix=True):
     x, y = take_data(database)
     t = 0
     N = len(y)
@@ -133,6 +134,14 @@ def apply_CLogD_MGE(database, eta, error_graph=True, accuracy=True, plot=True):
 
     if plot:
         plot_decision_boundary(database, alpha, x)
+    
+    if display_confusion_matrix:
+        cm_p = [1 if prob > 0.5 else 0 for prob in p_for_error]
+        cm = confusion_matrix(y, cm_p)
+
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+        disp.plot()
+        plt.show()
 
     return w, alpha, x
 
