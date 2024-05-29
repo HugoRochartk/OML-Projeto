@@ -41,12 +41,6 @@ def plot_DB(x, y):
     plt.show()
 
 
-<<<<<<< HEAD
-=======
-#database = "databases/multiclass2.csv"
-database = "databases/Multiclass1.csv"
->>>>>>> 0f975b044372754334086f93c53f653e03024101
-
 def build_light_mnist(train, test):
 
     to_save = "databases/light_mnist_"
