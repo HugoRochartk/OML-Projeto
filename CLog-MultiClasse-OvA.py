@@ -36,7 +36,6 @@ def plot_DB(x, y):
 
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
 
-  
     plt.xlabel('X')
     plt.ylabel('Y')
 
@@ -44,7 +43,7 @@ def plot_DB(x, y):
 
 
 #database = "databases/multiclass2.csv"
-database = "databases/multiclass1.csv"
+database = "databases/Multiclass1.csv"
 
 x, y = module.take_data(database)
 classes = set(map(int, y))

@@ -88,8 +88,13 @@ def get_accuracy(y_pred, y_true):
 
     return c/N
 
-def apply_CLogD_MGB(database, eta, error_graph=True, accuracy=True, plot=True, display_confusion_matrix=True):
-    x, y = take_data(database)
+def apply_CLogD_MGB(database, eta, error_graph=True, accuracy=True, plot=True, display_confusion_matrix=True, path=True):
+    
+    if path:
+        x, y = take_data(database)
+    else:
+        x, y = database
+
     t = 0
     N = len(y)
     alpha = tuple(0 for i in range(N))
