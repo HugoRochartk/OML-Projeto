@@ -167,3 +167,20 @@ for input in x:
 
 
 '''
+final_model_accuracy = 0
+
+x, y = module.take_data(test_path)
+N = len(y)
+
+for input, true_class in zip(x, y):
+    new_input = input
+    predicted_class = predict(new_input, table, w_classifiers)
+
+    #print('\nTable:')
+    #pprint(table)
+    if predicted_class == true_class:
+        final_model_accuracy += 1
+
+    print(f'\nPrediction of {new_input}: Class {predicted_class}; True_class {int(true_class)}.')
+
+print(f'\nFinal Model Accuracy: {final_model_accuracy/N}')

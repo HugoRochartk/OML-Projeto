@@ -1,6 +1,6 @@
 #escolher classificador
-#from CLog_Dual_SemKernel import CLogD_MGB as module
-from CLog_Dual_ComKernel import CLogDKPd_MGB as module
+from CLog_Dual_SemKernel import CLogD_MGB as module
+#from CLog_Dual_ComKernel import CLogDKPd_MGB as module
 #from CLog_Primal import CLog_MGB as module
 
 import matplotlib.pyplot as plt
@@ -41,11 +41,8 @@ def plot_DB(x, y):
     plt.show()
 
 
-<<<<<<< HEAD
-=======
 #database = "databases/multiclass2.csv"
 database = "databases/Multiclass1.csv"
->>>>>>> 0f975b044372754334086f93c53f653e03024101
 
 def build_light_mnist(train, test):
 
@@ -129,11 +126,11 @@ def apply_w_classifiers(w_classifiers, x):
 # ------------------------------------------------------
 
 
-train_path = "databases/multiclass2_train.csv"
-test_path = "databases/multiclass2_test.csv"
+#train_path = "databases/multiclass2_train.csv"
+#test_path = "databases/multiclass2_test.csv"
 
-#train_path = "databases/multiclass1_train.csv"
-#test_path = "databases/multiclass1_test.csv"
+train_path = "databases/multiclass1_train.csv"
+test_path = "databases/multiclass1_test.csv"
 
 
 
@@ -152,8 +149,9 @@ for c in classes:
 
     c_database = save_intermed_csv(f"{train_path[:-4]}/class_{c}.csv", x, y)
 
-    w, _, _ = module.apply_CLogDKPd_MGB(c_database, 0.5, 3, error_graph=False, accuracy=True, plot=True, display_confusion_matrix=False)
-    #MULTICLASS1: #w, _, _ = module.apply_CLogD_MGB(c_database, 0.5, error_graph=False, accuracy=True, plot=False, display_confusion_matrix=False)
+    #w, _, _ = module.apply_CLogDKPd_MGB(c_database, 0.5, 3, error_graph=False, accuracy=True, plot=True, display_confusion_matrix=False)
+    #MULTICLASS1: 
+    w, _, _ = module.apply_CLogD_MGB(c_database, 0.5, error_graph=False, accuracy=True, plot=False, display_confusion_matrix=False)
 
     #PARA O MNIST: w, _ = module.apply_CLog_MGE(c_database, (0,) * 785, 0.5, error_graph=False, accuracy=True, plot=False, display_confusion_matrix=False)
 
