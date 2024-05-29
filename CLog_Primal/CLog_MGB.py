@@ -67,6 +67,7 @@ def plot_error_graph(error_vals, t):
     plt.show()
 
 
+
 def get_accuracy(y_pred, y_true):
     c = 0
     N = len(y_pred)
