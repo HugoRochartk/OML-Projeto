@@ -176,7 +176,7 @@ def plot_data_points(database):
 
 
 '''
-database = "databases/ex6_D.csv"
+database = "databases/XOR.csv"
 d = 2
 w, alpha, x = apply_CLogDKPd_MGB(database, 0.5, d)
 print(f"w = {w}")
