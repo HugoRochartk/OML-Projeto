@@ -4,7 +4,7 @@ from CLog_Dual_ComKernel import CLogDKPd_MGB as module
 
 import matplotlib.pyplot as plt
 from pprint import pprint
-
+from sklearn import metrics
 
 
 def plot_DB(x, y):
@@ -171,10 +171,11 @@ final_model_accuracy = 0
 
 x, y = module.take_data(test_path)
 N = len(y)
-
+predicts=[]
 for input, true_class in zip(x, y):
     new_input = input
     predicted_class = predict(new_input, table, w_classifiers)
+    predicts.append(predicted_class)
 
     #print('\nTable:')
     #pprint(table)
@@ -184,3 +185,12 @@ for input, true_class in zip(x, y):
     print(f'\nPrediction of {new_input}: Class {predicted_class}; True_class {int(true_class)}.')
 
 print(f'\nFinal Model Accuracy: {final_model_accuracy/N}')
+
+
+
+confusion_matrix = metrics.confusion_matrix(predicts, y)
+print(confusion_matrix)
+
+cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [1,2,3,4,5])
+cm_display.plot()
+plt.show()

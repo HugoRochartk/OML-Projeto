@@ -6,6 +6,7 @@ from CLog_Dual_SemKernel import CLogD_MGB as module
 import matplotlib.pyplot as plt
 import pandas as pd
 import time
+from sklearn import metrics
 
 def double_digit_sec(secs):
     if secs < 10:
@@ -173,11 +174,12 @@ final_model_accuracy = 0
 
 x_test, y_test = module.take_data(test_path)
 N = len(y_test)
-
+predicts=[]
 print('-----------------------------------')
 for i in range(N):
     results = apply_w_classifiers(w_classifiers, x_test[i])
     predicted_class = max(results, key=lambda k: results[k])
+    predicts.append(predicted_class)
     if predicted_class == y_test[i]:
         final_model_accuracy += 1
     print(f'Results: {results}; Predicted class: {predicted_class}; True class: {y_test[i]}')
@@ -185,6 +187,13 @@ for i in range(N):
 print(f'\nFinal Model Accuracy: {final_model_accuracy/N}')
     
 
+
+confusion_matrix = metrics.confusion_matrix(predicts, y_test)
+print(confusion_matrix)
+
+cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [1,2,3,4])
+cm_display.plot()
+plt.show()
 
 
 
