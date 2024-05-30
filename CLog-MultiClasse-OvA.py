@@ -1,7 +1,7 @@
 #escolher classificador
-from CLog_Dual_SemKernel import CLogD_MGB as module
+#from CLog_Dual_SemKernel import CLogD_MGB as module
 #from CLog_Dual_ComKernel import CLogDKPd_MGB as module
-#from CLog_Primal import CLog_MGB as module
+from CLog_Primal import CLog_MGB as module
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -147,11 +147,10 @@ for c in classes:
 
     c_database = save_intermed_csv(f"{train_path[:-4]}/class_{c}.csv", x, y)
 
-    #w, _, _ = module.apply_CLogDKPd_MGB(c_database, 0.5, 3, error_graph=False, accuracy=True, plot=True, display_confusion_matrix=False)
-    #MULTICLASS1: 
-    w, _, _ = module.apply_CLogD_MGB(c_database, 0.5, error_graph=False, accuracy=True, plot=False, display_confusion_matrix=False)
-
-    #PARA O MNIST: w, _ = module.apply_CLog_MGE(c_database, (0,) * 785, 0.5, error_graph=False, accuracy=True, plot=False, display_confusion_matrix=False)
+    #w, _, _ = module.apply_CLogDKPd_MGB(c_database, 0.5, 2, error_graph=False, accuracy=True, plot=False, display_confusion_matrix=False)
+  
+    #w, _, _ = module.apply_CLogD_MGB(c_database, 0.5, error_graph=False, accuracy=True, plot=False, display_confusion_matrix=False)
+    w, _ = module.apply_CLog_MGB(c_database, (0,) * 785, 0.5, error_graph=False, accuracy=True, plot=False, display_confusion_matrix=False)
 
     w_classifiers[c] = w
 
@@ -189,9 +188,8 @@ print(f'\nFinal Model Accuracy: {final_model_accuracy/N}')
 
 
 confusion_matrix = metrics.confusion_matrix(predicts, y_test)
-print(confusion_matrix)
 
-cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [1,2,3,4])
+cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels=list(classes))
 cm_display.plot()
 plt.show()
 

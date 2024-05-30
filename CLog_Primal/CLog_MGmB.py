@@ -91,7 +91,7 @@ def apply_CLog_MGmB(database, w0, eta, error_graph=True, accuracy=True, plot=Tru
     while t < 2000 and error(p_for_error, y) > 0.025:
         aux = []
         p_for_error = [sigmoid(dot_product(w, (1.0,) + xn)) for xn in x]
-        B = random.randint(1, N)
+        B = 64#random.randint(1, N)
         subset = random.sample(list(range(N)), B)
         for ind in subset:
             dp = p_for_error[ind]

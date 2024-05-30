@@ -1,10 +1,18 @@
 #escolher classificador
+from CLog_Primal import CLog_MGB as module
 #from CLog_Dual_SemKernel import CLogD_MGB as module
-from CLog_Dual_ComKernel import CLogDKPd_MGB as module
+#from CLog_Dual_ComKernel import CLogDKPd_MGB as module
 
 import matplotlib.pyplot as plt
 from pprint import pprint
 from sklearn import metrics
+import time
+
+
+def double_digit_sec(secs):
+    if secs < 10:
+        return f"0{secs}"
+    return str(secs)
 
 
 def plot_DB(x, y):
@@ -60,8 +68,19 @@ def generate_codes_database(num_classes):
                 [0,1,0,1,0,1,0]
                 ]
 
-    else:
-        pass
+    elif num_classes == 10:
+
+        table = [[1,1,0,0,0,0,1,0,1,0,0,1,1,0,1],
+                 [0,0,1,1,1,1,0,1,0,1,1,0,0,1,0],
+                 [1,0,0,1,0,0,0,1,1,1,1,0,1,0,1],
+                 [0,0,1,1,0,1,1,1,0,0,0,0,1,0,1],
+                 [1,1,1,0,1,0,1,1,0,0,1,0,0,0,1],
+                 [0,1,0,0,1,1,0,1,1,1,0,0,0,0,1],
+                 [1,0,1,1,1,0,0,0,0,1,0,1,0,0,1],
+                 [0,0,0,1,1,1,1,0,1,0,1,1,0,0,1],
+                 [1,1,0,1,0,1,1,0,0,1,0,0,0,1,1],
+                 [0,1,1,1,0,0,0,0,1,0,1,0,0,1,1]]
+        
 
 
     return table, transpose(table)
@@ -115,7 +134,7 @@ def ECOC(database):
     path = f'{database[:-4]}-ECOC/'
     w_classifiers = {}
 
-    plot_DB(x, old_y)
+    #plot_DB(x, old_y)
 
     for classifier_number, c in enumerate(classifiers):
         get_classes_at_1 = [i+1 for i, elem in enumerate(c) if elem == 1]
@@ -123,8 +142,10 @@ def ECOC(database):
 
         c_database = save_intermed_csv(path+f"classifier_{c}.csv", x, y)
         
+        #w, _, _ = module.apply_CLogDKPd_MGB(c_database, 0.5, 2, error_graph=False, accuracy=True, plot=False, display_confusion_matrix=False)
         #w, _, _ = module.apply_CLogD_MGB(c_database, 0.5, error_graph=False, accuracy=True, plot=False, display_confusion_matrix=False)
-        w, _, _ = module.apply_CLogDKPd_MGB(c_database, 0.5, 3, error_graph=False, accuracy=True, plot=False, display_confusion_matrix=False)
+
+        w, _ = module.apply_CLog_MGB(c_database, (0,) * 785, 0.5, error_graph=False, accuracy=True, plot=False, display_confusion_matrix=False)
 
         w_classifiers[classifier_number] = w
 
@@ -132,41 +153,32 @@ def ECOC(database):
         
     
 
-#train_path = "databases/multiclass1_train.csv"
-#test_path = "databases/multiclass1_test.csv"
+train_path = "databases/multiclass1_train.csv"
+test_path = "databases/multiclass1_test.csv"
 
-train_path = "databases/multiclass2_train.csv"
-test_path = "databases/multiclass2_test.csv"
+#train_path = "databases/multiclass2_train.csv"
+#test_path = "databases/multiclass2_test.csv"
 
+'''
+----------------------------------- MNIST SECTION ---------------------------------
+start_time = time.time()
 
+train_path = "databases/light_mnist_train.csv"
+test_path = "databases/light_mnist_test.csv"
+-------------------------------------------------------------------------------------
+'''
 table, w_classifiers = ECOC(train_path)
 
 
-
-''' 
-ISTO É SO PARA 1 PONTO
-FAZER UM FOR PARA TODOS OS PONTOS DA BD DE TESTE 
-E CALCULAR ACCURACY
-
-new_input = (0, 0)
-predicted_class = predict(new_input, table, w_classifiers)
-
-print('\nTable:')
-pprint(table)
-
-print(f'\nPrediction of {new_input}: Class {predicted_class}.')
-
-
-
-
-
-x, y = module.take_data(test_path)
-
-for input in x:
-    ...
-
-
 '''
+----------------------------------- MNIST SECTION ---------------------------------
+end_time = time.time()
+time_dif = end_time - start_time
+
+print("Tempo de treino: " + f"{int(time_dif//60)}min" + double_digit_sec(int(time_dif - ((time_dif//60)*60))) + "s")
+-----------------------------------------------------------------------------------´
+'''
+
 final_model_accuracy = 0
 
 x, y = module.take_data(test_path)
@@ -177,20 +189,17 @@ for input, true_class in zip(x, y):
     predicted_class = predict(new_input, table, w_classifiers)
     predicts.append(predicted_class)
 
-    #print('\nTable:')
-    #pprint(table)
     if predicted_class == true_class:
         final_model_accuracy += 1
 
-    print(f'\nPrediction of {new_input}: Class {predicted_class}; True_class {int(true_class)}.')
+    #print(f'\nPrediction of {new_input}: Class {predicted_class}; True_class {int(true_class)}.')
 
 print(f'\nFinal Model Accuracy: {final_model_accuracy/N}')
 
 
 
 confusion_matrix = metrics.confusion_matrix(predicts, y)
-print(confusion_matrix)
 
-cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [1,2,3,4,5])
+cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = list(set(y)))
 cm_display.plot()
 plt.show()
